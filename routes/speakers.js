@@ -5,10 +5,15 @@ const router = express.Router();
 module.exports = (params) => {
     const { speakersService } = params;
 
-    router.get('/', async (request, response) => {
-        const speakers = await speakersService.getList();
-        const artWork = await speakersService.getAllArtwork();
-        response.render('layout', { pageTitle: 'Speakers', template: 'speakers', speakers, artWork })
+    router.get('/', async (request, response, next) => {
+        try {
+            const speakers = await speakersService.getList();
+            const artWork = await speakersService.getAllArtwork();
+            return response.render('layout', { pageTitle: 'Speakers', template: 'speakers', speakers, artWork })
+        } catch (error) {
+            return next(error);
+        }
+
     })
 
     router.get('/:shortname', async (request, response) => {
